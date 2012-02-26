@@ -1,0 +1,24 @@
+Camel Restlet and JDBC example
+=======================================
+
+An example which shows how to expose CRUD operations with REST interface and JDBC implementation
+
+Compile: mvn clean install
+Run the application: mvn jetty:run
+
+
+To create an user, make a http POST request with firstName and lastName parameters
+curl -d "firstName=test&lastName=user" http://localhost:8080/rs/user/
+
+To update an existing user, make a http PUT request with firstName and lastName parameters
+curl -X PUT -d "firstName=updated&lastName=user" http://localhost:8080/rs/user/2
+
+To retrieve an existing user, make a http GET request with the userId as part of the url
+curl -X GET  http://localhost:8080/rs/user/0
+
+To delete an existing user, make a http DELETE request with the userId as part of the url
+curl -X DELETE  http://localhost:8080/rs/user/0
+
+To retrieve all the existing users, make a http GET request to users url
+curl -X GET  http://localhost:8080/rs/users
+
