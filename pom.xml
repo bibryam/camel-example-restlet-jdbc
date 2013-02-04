@@ -28,13 +28,21 @@
     <packaging>war</packaging>
 
 	<properties>
-		<camel-version>2.10-SNAPSHOT</camel-version>
+		<camel-version>2.10.0</camel-version>
 	    <restlet-version>2.0.0</restlet-version>
         <hsqldb-version>2.0.0</hsqldb-version>
         <spring-version>3.1.0.RELEASE</spring-version>
         <log4j-version>1.2.16</log4j-version>
    		<slf4j-version>1.6.1</slf4j-version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>

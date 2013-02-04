@@ -1,23 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
-
-
-
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:camel="http://camel.apache.org/schema/spring"
@@ -39,61 +20,10 @@
         <jdbc:script location="classpath:sql/init.sql"/>
     </jdbc:embedded-database>
 
-    <camelContext xmlns="http://camel.apache.org/schema/spring">
+    <bean id="testRouteBuilder" class="org.test.router.TestRouteBuilder" />
 
-        <!-- curl -d "firstName=value1&lastName=value2" http://localhost:8080/rs/user/  -->
-        <route id="createUser">
-            <from uri="restlet:/user?restletMethod=POST"/>
+    <camel:camelContext id="defaultCamelContext">
+        <camel:routeBuilder ref="testRouteBuilder"/>
+    </camel:camelContext>
 
-            <setBody>
-                <simple>insert into user(firstName, lastName) values('${header.firstName}','${header.lastName}');
-                    CALL IDENTITY();
-                </simple>
-            </setBody>
-            <to uri="jdbc:dataSource"/>
-
-            <setBody>
-                <simple>select * from user ORDER BY id desc LIMIT 1</simple>
-            </setBody>
-            <to uri="jdbc:dataSource"/>
-        </route>
-
-        <route id="getUser">
-            <from uri="restlet:/user/{userId}?restletMethods=GET,PUT,DELETE"/>
-            <choice>
-                <when>
-                    <simple>${header.CamelHttpMethod} == 'GET'</simple>
-                    <setBody>
-                        <simple>select * from user where id = ${header.userId}</simple>
-                    </setBody>
-                </when>
-                <when>
-                   <simple>${header.CamelHttpMethod} == 'PUT'</simple>
-                   <setBody>
-                       <simple>update user set firstName='${header.firstName}', lastName='${header.lastName}' where id = ${header.userId}</simple>
-                   </setBody>
-                </when>
-                <when>
-                    <simple>${header.CamelHttpMethod} == 'DELETE'</simple>
-                    <setBody>
-                        <simple>delete from user where id = ${header.userId}</simple>
-                    </setBody>
-                </when>
-                <otherwise>
-                   <stop/>
-                </otherwise>
-            </choice>
-            <to uri="jdbc:dataSource"/>
-        </route>
-
-        <route id="listUsers">
-            <from uri="restlet:/users"/>
-            <setBody>
-                <constant>select * from user</constant>
-            </setBody>
-            <to uri="jdbc:dataSource"/>
-        </route>
-
-    </camelContext>
 </beans>
-<!-- END SNIPPET: e1 -->
