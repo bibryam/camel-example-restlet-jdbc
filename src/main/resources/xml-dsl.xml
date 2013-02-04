@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+
+    <import resource="common.xml" />
+
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+        <route id="createUser">
+            <from uri="restlet:/user?restletMethod=POST"/>
+
+            <setBody>
+                <simple>insert into user(firstName, lastName) values('${header.firstName}','${header.lastName}');
+                    CALL IDENTITY();
+                </simple>
+            </setBody>
+            <to uri="jdbc:dataSource"/>
+
+            <setBody>
+                <simple>select * from user ORDER BY id desc LIMIT 1</simple>
+            </setBody>
+            <to uri="jdbc:dataSource"/>
+        </route>
+
+        <route id="getUser">
+            <from uri="restlet:/user/{userId}?restletMethods=GET,PUT,DELETE"/>
+            <choice>
+                <when>
+                    <simple>${header.CamelHttpMethod} == 'GET'</simple>
+                    <setBody>
+                        <simple>select * from user where id = ${header.userId}</simple>
+                    </setBody>
+                </when>
+                <when>
+                    <simple>${header.CamelHttpMethod} == 'PUT'</simple>
+                    <setBody>
+                        <simple>update user set firstName='${header.firstName}', lastName='${header.lastName}' where id = ${header.userId}</simple>
+                    </setBody>
+                </when>
+                <when>
+                    <simple>${header.CamelHttpMethod} == 'DELETE'</simple>
+                    <setBody>
+                        <simple>delete from user where id = ${header.userId}</simple>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <stop/>
+                </otherwise>
+            </choice>
+            <to uri="jdbc:dataSource"/>
+        </route>
+
+        <route id="listUsers">
+            <from uri="restlet:/users"/>
+            <setBody>
+                <constant>select * from user</constant>
+            </setBody>
+            <to uri="jdbc:dataSource"/>
+        </route>
+
+    </camelContext>
+</beans>

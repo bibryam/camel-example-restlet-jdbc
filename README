@@ -4,8 +4,11 @@ Camel Restlet and JDBC example
 An example which shows how to expose CRUD operations with REST interface and JDBC implementation
 
 Compile: mvn clean install
-Run the application: mvn jetty:run
+Run the application:
 
+mvn jetty:run -Dimpl=xml-dsl
+or
+mvn jetty:run -Dimpl=java-dsl
 
 To create an user, make a http POST request with firstName and lastName parameters
 curl -d "firstName=test&lastName=user" http://localhost:8080/rs/user/

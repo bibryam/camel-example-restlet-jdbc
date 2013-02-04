@@ -5,7 +5,7 @@ import org.apache.camel.builder.RouteBuilder;
 public class TestRouteBuilder extends RouteBuilder {
 
     @Override
-    public void configure() throws Exception {
+    public void configure() {
         from("restlet:/user?restletMethod=POST")
                 .setBody(simple("insert into user(firstName, lastName) values('${header.firstName}','${header.lastName}'); CALL IDENTITY();"))
                 .to("jdbc:dataSource")
