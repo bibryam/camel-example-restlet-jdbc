@@ -4,3 +4,7 @@ target
 *.ipr
 *.iws
 
+/org.eclipse.wst.validation.prefs
+/.settings/
+/.project
+/.classpath
