@@ -32,7 +32,7 @@
         <restlet-version>2.0.15</restlet-version>
         <hsqldb-version>2.0.0</hsqldb-version>
         <maven-jetty-plugin-version>6.1.25</maven-jetty-plugin-version>
-        <spring-version>3.2.3.RELEASE</spring-version>
+        <spring-version>3.1.4.RELEASE</spring-version>
         <slf4j-version>1.7.5</slf4j-version>
     </properties>
 
